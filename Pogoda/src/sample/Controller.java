@@ -37,25 +37,23 @@ public class Controller {
 
     @FXML
     void initialize() {
-        assert city != null : "fx:id=\"city\" was not injected: check your FXML file 'Untitled'.";
-        assert getData != null : "fx:id=\"getData\" was not injected: check your FXML file 'Untitled'.";
-        assert temp_info != null : "fx:id=\"temp_info\" was not injected: check your FXML file 'Untitled'.";
-        assert temp_feels != null : "fx:id=\"temp_feels\" was not injected: check your FXML file 'Untitled'.";
-        assert temp_max != null : "fx:id=\"temp_max\" was not injected: check your FXML file 'Untitled'.";
 
+//описываем событие по нажатию кнопки
         getData.setOnAction(event -> {
             String getUserCity = city.getText().trim();
+            //получаем данные через API key
             String output = getUrlContent("http://api.openweathermap.org/data/2.5/weather?q=" + getUserCity + "&APPID=d9fd6dfa55e57e9c2b108718c17b19aa");
-            if (!output.isEmpty()) { // Нет ошибки и такой город есть
+           //если получаем что-то, тогда обрабатываем
+            if (!output.isEmpty()) {
                 JSONObject obj = new JSONObject(output);
-                // Обрабатываем JSON и устанавливаем данные в текстовые надписи
+                //округляем полученное значение до 1 знака после запятой
                 DecimalFormat df = new DecimalFormat("###.#");
-
+                //переводим в цельсий
                 double temperatura = (obj.getJSONObject("main").getDouble("temp") - 273);
                 double temperatura_feels = (obj.getJSONObject("main").getDouble("feels_like") - 273);
                 double temperatura_max = (obj.getJSONObject("main").getDouble("temp_max") - 273);
 
-
+                //подставляем значения
                 temp_info.setText("Температура: " + df.format(temperatura));
                 temp_feels.setText("Ощущается: " + df.format(temperatura_feels));
                 temp_max.setText("Максимум: " + df.format(temperatura_max));
@@ -64,7 +62,7 @@ public class Controller {
             }
        });
     }
-
+//описываем обработку полученного от сайта "сообщения"
     private static String getUrlContent(String urlAdress){
         StringBuffer content = new StringBuffer();
         try{
